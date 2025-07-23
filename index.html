@@ -1,286 +1,293 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geekz • Pembayaran</title>
-  <link rel="icon" href="https://avatars.githubusercontent.com/u/79773348?v=4" />
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>Kalkulator Atap L</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: url('https://cizucu-production.imgix.net/images/photos/nQFsp07vcHjgtwyNG4Ff.jpg?auto=format%2Ccompress&fit=max&w=1080&q=75') no-repeat center center fixed;
-      background-size: cover;
-      color: #f0f0f0;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }.theme-box {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 1.25rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      padding: 30px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #155fa0;
+    }
+
+    label {
+      font-size: 14px;
+    }
+
+    input[type="number"] {
+      padding: 5px 8px;
+      margin: 5px 0;
+      font-size: 14px;
+      width: 100px;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #135ba1;
+    }
+
+    .box-result {
+      margin-top: 20px;
+      padding: 15px 20px;
+      border-radius: 6px;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: fit-content;
+    }
+
+    .visual-wrapper {
+      position: relative;
+      border: 2px solid #444;
+      background-color: #e0e0e0;
+      box-shadow: inset 0 0 5px #aaa;
+    }
+
+    .visual-box {
+      position: absolute;
+      background-color: #64b5f6;
+      border: 1px solid #444;
+      transition: all 0.3s ease;
+    }
+
+    .semi-box {
+      position: absolute;
+      background-color: #81c784;
+      transition: all 0.3s ease;
+    }
+
+    .dimension-label {
+      position: absolute;
+      font-size: 11px;
+      background: white;
+      padding: 3px 5px;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      font-weight: bold;
+      z-index: 20;
+    }
+
+    .visual-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    #hasilL {
+      background: #fff;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 5px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+
+    #hasilL div {
+      margin: 4px 0;
+    }
+    
+    .input-box {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 5px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border 0.3s;
+  box-sizing: border-box;
 }
 
-.theme-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  display: inline-block;
-  backdrop-filter: blur(4px);
-}
-
-.theme-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.btn-group {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.rounded-box {
-  border-radius: 12px;
-}
-
-.line-typing {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeInLine 0.6s ease forwards;
-}
-
-@keyframes fadeInLine {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-#typing-text::after {
-  content: '|';
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-#toast {
-  position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  backdrop-filter: blur(8px);
-  padding: 0.75rem 1.25rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: 0.9rem;
-  z-index: 50;
-  opacity: 0;
-  transform: translateY(-20px);
-  pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-#toast.show {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+.input-box:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 3px rgba(25, 118, 210, 0.4);
 }
   </style>
 </head>
 <body>
-  <section id="intro" class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-    <div class="theme-box max-w-md w-full">
-      <img src="https://avatars.githubusercontent.com/u/79773348?v=4" class="w-24 h-24 mx-auto rounded-full border-4 border-gray-700 mb-4" alt="Profile" />
-      <h1 class="text-3xl font-bold mb-2">Geekz</h1>
-      <div class="text-sm text-gray-300 space-y-1 mb-4">
-        <p class="line-typing" style="animation-delay: 0.1s;">👨‍💻 Web Developer</p>
-        <p class="line-typing" style="animation-delay: 0.4s;">💸 Topup Game & Aplikasi Premium</p>
-        <p class="line-typing" style="animation-delay: 0.7s;">🖥️ Sewa Panel & Jasa Bot WhatsApp</p>
-      </div>
-      <div class="btn-group">
-        <a href="https://github.com/amgeekz" target="_blank" class="theme-btn">GitHub</a>
-        <a href="https://instagram.com/inodsanjaya" target="_blank" class="theme-btn">Instagram</a>
-        <a href="https://wa.me/6285649455626" target="_blank" class="theme-btn">WhatsApp</a>
-        <a href="https://amgeekz.com" target="_blank" class="theme-btn">Topup</a>
-        <a href="https://amgeekz.my.id" target="_blank" class="theme-btn">Panel</a>
-      </div>
-      <button onclick="showPaymentSection()" class="theme-btn">💳 Lihat Metode Pembayaran</button>
+<h2 style="text-align: center; color: #1976d2;">🟦 Kalkulator Atap Tipe L</h2>
+
+<div style="max-width: 420px; margin: 0 auto; background: #fff; padding: 20px 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+
+  <div style="display: flex; gap: 10px;">
+    <div style="flex: 1;">
+      <label for="p1">Panjang 1 (P1):</label>
+      <input type="number" id="p1" step="0.01" value="2.40" class="input-box">
     </div>
-  </section>  <section id="payment" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
-    <div class="theme-box max-w-md w-full relative">
-      <button onclick="backToIntro()" class="absolute top-4 right-4 text-gray-300 hover:text-white text-lg font-bold">✖</button>
-      <img src="https://avatars.githubusercontent.com/u/79773348?v=4" class="w-20 h-20 mx-auto rounded-full border-4 border-gray-700 mb-4" alt="Profile" />
-      <h2 class="text-xl font-semibold mb-4">Metode Pembayaran</h2>
-      <div id="paymentButtons" class="w-full max-w-md flex flex-col gap-3"></div>
-      <div class="text-sm text-gray-300 pt-4">
-        💡 <span id="typing-text" class="font-medium"></span>
-      </div>
-    </div>
-  </section>  <div id="qrisModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="theme-box max-w-sm w-full text-center relative">
-      <button onclick="document.getElementById('qrisModal').classList.add('hidden')" class="absolute top-2 right-3 text-gray-400 hover:text-white">✖</button>
-      <h2 class="text-xl font-semibold mb-4">Scan QRIS</h2>
-      <img id="qrisImage" src="" alt="QRIS" class="w-full rounded-box mb-4">
-      <button onclick="downloadQRIS()" class="theme-btn">⬇️ Download QRIS</button>
+    <div style="flex: 1;">
+      <label for="l1">Lebar 1 (L1):</label>
+      <input type="number" id="l1" step="0.01" value="6" class="input-box">
     </div>
   </div>
-  <div id="toast"></div>
-  <audio id="bg-music" loop>
-    <source src="caffelatte.mp3" type="audio/mp3">
-  </audio>  <script>
-    const CONFIG = {
-      PAYMENT: {
-        BCA: "6630551445",
-        SeaBank: "901726382280",
-        Ewallet: "085649455626",
-        QRIS: "https://files.catbox.moe/se5i9f.jpg"
-      }
-    };
 
-    const data = CONFIG.PAYMENT;
-
-    window.addEventListener('click', function () {
-      const audio = document.getElementById('bg-music');
-      const context = new (window.AudioContext || window.webkitAudioContext)();
-      const source = context.createMediaElementSource(audio);
-      source.connect(context.destination);
-      audio.play();
-    }, { once: true });
-
-    function renderButtons() {
-      const container = document.getElementById('paymentButtons');
-      container.innerHTML = '';
-      const buttons = [
-        { label: "BCA", text: data.BCA, icon: "🏦" },
-        { label: "SeaBank", text: data.SeaBank, icon: "🏦" },
-        { label: "GoPay", text: data.Ewallet, icon: "📱" },
-        { label: "ShopeePay", text: data.Ewallet, icon: "🛒" },
-        { label: "Dana", text: data.Ewallet, icon: "💰" },
-        { label: "QRIS", text: "All Payment", icon: "🔳", isQRIS: true },
-      ];
-      buttons.forEach(({ label, text, icon, isQRIS }) => {
-        const btn = document.createElement("button");
-        btn.className = "theme-btn w-full px-4 py-2 flex items-center justify-between text-sm";
-
-btn.innerHTML = `
-  <div class="flex items-center justify-between w-full">
-    <div class="flex items-center gap-2">
-      <div class="text-xl">${icon}</div>
-      <span class="font-medium text-sm">${label}</span>
+  <div style="display: flex; gap: 10px;">
+    <div style="flex: 1;">
+      <label for="p2">Panjang 2 (P2):</label>
+      <input type="number" id="p2" step="0.01" value="2.35" class="input-box">
     </div>
-    <span class="text-sm font-mono text-right text-gray-100">${text}</span>
+    <div style="flex: 1;">
+      <label for="l2">Lebar 2 (L2):</label>
+      <input type="number" id="l2" step="0.01" value="4" class="input-box">
+    </div>
   </div>
-`;
-        btn.onclick = () => {
-          isQRIS ? showQRIS() : copyText(text, label);
-        };
-        container.appendChild(btn);
-      });
+
+  <label style="display:block; margin-top: 8px;">
+    <input type="checkbox" id="useBalok"> Tambahan balok?
+  </label>
+  <input type="number" id="balok" step="0.01" placeholder="Luas balok (m²)" style="display:none;" class="input-box">
+
+  <label style="display:block; margin-top: 8px;">
+    <input type="checkbox" id="useSemi"> Tambahan semi (50%)
+  </label>
+
+  <button onclick="hitungL()" style="margin-top: 15px;">Hitung</button>
+</div>
+
+<div id="captureArea">
+  <div id="hasilL"></div>
+  <div id="boxL" class="box-result" style="display:none;"></div>
+</div>
+<div style="margin-top: 15px; text-align: center;">
+  <button onclick="downloadImage()">📷 Download Gambar</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    document.getElementById("useBalok").addEventListener("change", () => {
+      document.getElementById("balok").style.display = document.getElementById("useBalok").checked ? "inline-block" : "none";
+    });
+
+    function formatRupiah(angka) {
+      return angka.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
     }
 
-    function showPaymentSection() {
-      document.getElementById("intro").classList.add("hidden");
-      document.getElementById("payment").classList.remove("hidden");
-      renderButtons();
+    function hitungL() {
+      const p1 = parseFloat(document.getElementById("p1").value);
+      const l1 = parseFloat(document.getElementById("l1").value);
+      const p2 = parseFloat(document.getElementById("p2").value);
+      const l2 = parseFloat(document.getElementById("l2").value);
+      const useBalok = document.getElementById("useBalok").checked;
+      const tambahan = useBalok ? parseFloat(document.getElementById("balok").value) || 0 : 0;
+      const useSemi = document.getElementById("useSemi").checked;
+
+      if (isNaN(p1) || isNaN(l1) || isNaN(p2) || isNaN(l2)) {
+        document.getElementById("hasilL").innerText = "Mohon isi semua ukuran bidang.";
+        return;
+      }
+
+      const luas1 = p1 * l1;
+      const luas2 = p2 * l2;
+      const totalLuas = luas1 + luas2;
+      const semi = useSemi ? totalLuas * 0.5 : 0;
+      const totalFinal = totalLuas + semi + tambahan;
+      const biaya = totalFinal * 150000;
+
+      document.getElementById("hasilL").innerHTML = `
+        <h3>📏 Hasil Perhitungan:</h3>
+        <div>Luas 1 = ${p1} × ${l1} = ${luas1.toFixed(2)} m²</div>
+        <div>Luas 2 = ${p2} × ${l2} = ${luas2.toFixed(2)} m²</div>
+        <div>Total Luas = ${totalLuas.toFixed(2)} m²</div>
+        ${useSemi ? `<div>Tambahan Semi (50%) = ${semi.toFixed(2)} m²</div>` : ""}
+        ${useBalok ? `<div>Tambahan Balok = ${tambahan.toFixed(2)} m²</div>` : ""}
+        <div><b>Total Luas Akhir = ${totalFinal.toFixed(2)} m²</b></div>
+        <div><b>Total Biaya = ${formatRupiah(biaya)}</b></div>
+      `;
+
+      const scale = 20;
+      const w1 = p1 * scale, h1 = l1 * scale;
+      const w2 = p2 * scale, h2 = l2 * scale;
+      const containerWidth = w1 + w2;
+      const containerHeight = Math.max(h1, h2);
+
+      const box1Style = `top:0; left:0; width:${w1}px; height:${h1}px;`;
+      const box2Style = `
+        top:${h1 - h2}px;
+        left:${w1}px;
+        width:${w2}px;
+        height:${h2}px;
+        border-top: 1px solid #555;
+        border-right: 1px solid #555;
+        border-bottom: 1px solid #555;
+        border-left: none;
+      `;
+
+      const semiBox = useSemi ? (() => {
+        const shrink = 0.6;
+        const semiW1 = w1 * shrink;
+        const semiH1 = h1 * shrink;
+        const semiW2 = w2 * shrink;
+        const semiH2 = h2 * shrink;
+
+        const semiTotalWidth = semiW1 + semiW2;
+        const semiTotalHeight = Math.max(semiH1, semiH2);
+
+        const offsetX = (containerWidth - semiTotalWidth) / 2;
+        const offsetY = (containerHeight - semiTotalHeight) / 2;
+
+        const adjustmentY = 10;
+        const adjustmentX = 10;
+        const extendHeight1 = 15;
+        const widenBox2 = 15;
+
+        const semiBox1 = `
+          <div class="semi-box" style="
+            top:${offsetY + adjustmentY - extendHeight1}px;
+            left:${offsetX - adjustmentX}px;
+            width:${semiW1}px;
+            height:${semiH1 + extendHeight1}px;
+          "></div>`;
+
+        const semiBox2 = `
+          <div class="semi-box" style="
+            top:${offsetY + (semiH1 - semiH2) + adjustmentY}px;
+            left:${offsetX + semiW1 - adjustmentX}px;
+            width:${semiW2 + widenBox2}px;
+            height:${semiH2}px;
+          "></div>`;
+
+        return semiBox1 + semiBox2;
+      })() : "";
+
+      document.getElementById("boxL").style.display = "block";
+      document.getElementById("boxL").innerHTML = `
+        <div class="visual-container">
+          <div class="visual-wrapper" style="width:${containerWidth}px; height:${containerHeight}px;">
+            <div class="visual-box" style="${box1Style}"></div>
+            <div class="visual-box" style="${box2Style}"></div>
+            ${semiBox}
+            <span class="dimension-label" style="top:0; left:${w1 / 2}px;">${p1}m</span>
+            <span class="dimension-label" style="top:${h1 / 2}px; left:-8px; transform:rotate(90deg) translateY(-50%); transform-origin: left center;">${l1}m</span>
+            <span class="dimension-label" style="top:${h1 - h2 - 15}px; left:${w1 + w2 / 2}px; transform:translateX(-50%);">${p2}m</span>
+            <span class="dimension-label" style="top:${h1 - h2 + h2 / 2}px; left:${w1 + w2}px; transform:rotate(90deg) translateY(-50%); transform-origin: left center;">${l2}m</span>
+          </div>
+        </div>
+      `;
     }
     
-    function backToIntro() {
-  document.getElementById("payment").classList.add("hidden");
-  document.getElementById("intro").classList.remove("hidden");
+    function downloadImage() {
+  const target = document.getElementById('captureArea');
+  html2canvas(target).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'atap-l.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
 }
-
-    function showQRIS() {
-      document.getElementById("qrisImage").src = data.QRIS;
-      document.getElementById("qrisModal").classList.remove("hidden");
-    }
-
-    function downloadQRIS() {
-      fetch(data.QRIS).then(res => res.blob()).then(blob => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "qris.jpg";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      });
-    }
-
-    function showToast(msg) {
-  const toast = document.getElementById("toast");
-  toast.innerHTML = `✅ ${msg}`;
-  toast.classList.add("show");
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
-}
-
-function copyText(text, label) {
-  if (navigator.clipboard && window.isSecureContext) {
-    // Clipboard API tersedia dan aman
-    navigator.clipboard.writeText(text)
-      .then(() => showToast(`${label} berhasil disalin!`))
-      .catch(() => fallbackCopy(text, label));
-  } else {
-    fallbackCopy(text, label);
-  }
-}
-
-function fallbackCopy(text, label) {
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.style.position = "fixed"; // agar tidak memicu scroll
-  document.body.appendChild(textarea);
-  textarea.focus();
-  textarea.select();
-  try {
-    document.execCommand("copy");
-    showToast(`${label} berhasil disalin!`);
-  } catch (err) {
-    alert("❌ Gagal menyalin teks. Silakan salin manual.");
-  }
-  document.body.removeChild(textarea);
-}
-
-    const typedTexts = [
-      "Pilih metode pembayaran yang paling mudah buat kamu",
-      "Tekan tombol buat salin nomor otomatis",
-      "QRIS juga bisa, tinggal scan aja!",
-    ];
-
-    let textIndex = 0;
-    let charIndex = 0;
-
-    function typeInstruction() {
-      const display = document.getElementById("typing-text");
-      const currentText = typedTexts[textIndex];
-
-      if (charIndex < currentText.length) {
-        display.innerHTML += currentText.charAt(charIndex++);
-        setTimeout(typeInstruction, 50);
-      } else {
-        setTimeout(() => {
-          display.innerHTML = "";
-          charIndex = 0;
-          textIndex = (textIndex + 1) % typedTexts.length;
-          typeInstruction();
-        }, 2000);
-      }
-    }
-
-    window.addEventListener("load", typeInstruction);
-  </script></body>
+  </script>
+</body>
 </html>
