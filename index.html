@@ -53,11 +53,15 @@
     }
 
     .visual-wrapper {
-      position: relative;
-      border: 2px solid #444;
-      background-color: #e0e0e0;
-      box-shadow: inset 0 0 5px #aaa;
-    }
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: #e0e0e0;
+  box-shadow: inset 0 0 5px #aaa;
+  overflow: visible;
+}
 
     .visual-box {
       position: absolute;
@@ -84,11 +88,13 @@
     }
 
     .visual-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 15px;
-      overflow-x: auto;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  border: 2px dashed #888;
+  background-color: #f8f9fa;
+}
 
     #hasilL {
       background: #fff;
@@ -120,6 +126,12 @@
       outline: none;
       box-shadow: 0 0 3px rgba(25, 118, 210, 0.4);
     }
+    
+    #captureArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
     
 @media (max-width: 600px) {
   body {
@@ -173,24 +185,24 @@
 
 <div style="max-width: 420px; margin: 0 auto; background: #fff; padding: 20px 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
 
-  <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-    <div style="flex: 1 1 45%;">
-      <label for="p1">Panjang 1 (P1):</label>
-      <input type="number" id="p1" step="0.01" value="2.40" class="input-box">
-    </div>
-    <div style="flex: 1 1 45%;">
-      <label for="l1">Lebar 1 (L1):</label>
-      <input type="number" id="l1" step="0.01" value="6" class="input-box">
-    </div>
-    <div style="flex: 1 1 45%;">
-      <label for="p2">Panjang 2 (P2):</label>
-      <input type="number" id="p2" step="0.01" value="2.35" class="input-box">
-    </div>
-    <div style="flex: 1 1 45%;">
-      <label for="l2">Lebar 2 (L2):</label>
-      <input type="number" id="l2" step="0.01" value="4" class="input-box">
-    </div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px;">
+  <div style="flex: 1 1 45%;">
+    <label for="p1">Panjang 1 (meter):</label>
+    <input type="number" id="p1" step="0.01" placeholder="Contoh: 2.40" class="input-box" inputmode="decimal">
   </div>
+  <div style="flex: 1 1 45%;">
+    <label for="l1">Lebar 1 (meter):</label>
+    <input type="number" id="l1" step="0.01" placeholder="Contoh: 6.00" class="input-box" inputmode="decimal">
+  </div>
+  <div style="flex: 1 1 45%;">
+    <label for="p2">Panjang 2 (meter):</label>
+    <input type="number" id="p2" step="0.01" placeholder="Contoh: 2.35" class="input-box" inputmode="decimal">
+  </div>
+  <div style="flex: 1 1 45%;">
+    <label for="l2">Lebar 2 (meter):</label>
+    <input type="number" id="l2" step="0.01" placeholder="Contoh: 4.00" class="input-box" inputmode="decimal">
+  </div>
+</div>
 
   <label style="display:block; margin-top: 8px;">
     <input type="checkbox" id="useBalok"> Tambahan balok?
@@ -200,6 +212,10 @@
   <label style="display:block; margin-top: 8px;">
     <input type="checkbox" id="useSemi"> Tambahan semi (50%)
   </label>
+  <label style="display:block; margin-top: 8px;">
+  <input type="checkbox" id="useDiskon"> Gunakan Diskon
+</label>
+<input type="number" id="diskon" min="0" step="1000" placeholder="Contoh: 100000" style="display:none;" class="input-box">
 
   <button onclick="hitungL()">Hitung</button>
 </div>
@@ -215,8 +231,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
+  // Tampilkan input balok dan diskon jika dicentang
   document.getElementById("useBalok").addEventListener("change", () => {
     document.getElementById("balok").style.display = document.getElementById("useBalok").checked ? "inline-block" : "none";
+  });
+  document.getElementById("useDiskon").addEventListener("change", () => {
+    document.getElementById("diskon").style.display = document.getElementById("useDiskon").checked ? "inline-block" : "none";
   });
 
   function formatRupiah(angka) {
@@ -231,6 +251,8 @@
     const useBalok = document.getElementById("useBalok").checked;
     const tambahan = useBalok ? parseFloat(document.getElementById("balok").value) || 0 : 0;
     const useSemi = document.getElementById("useSemi").checked;
+    const useDiskon = document.getElementById("useDiskon").checked;
+    const nominalDiskon = useDiskon ? parseFloat(document.getElementById("diskon").value) || 0 : 0;
 
     if (isNaN(p1) || isNaN(l1) || isNaN(p2) || isNaN(l2)) {
       document.getElementById("hasilL").innerText = "Mohon isi semua ukuran bidang.";
@@ -242,19 +264,32 @@
     const totalLuas = luas1 + luas2;
     const semi = useSemi ? totalLuas * 0.5 : 0;
     const totalFinal = totalLuas + semi + tambahan;
-    const biaya = totalFinal * 150000;
+
+    let biaya = totalFinal * 150000;
+    let potongan = 0;
+    if (useDiskon && nominalDiskon > 0 && nominalDiskon <= biaya) {
+      potongan = nominalDiskon;
+      biaya -= potongan;
+    }
 
     document.getElementById("hasilL").innerHTML = `
-      <h3>📏 Hasil Perhitungan:</h3>
-      <div>Luas 1 = ${p1} × ${l1} = ${luas1.toFixed(2)} m²</div>
-      <div>Luas 2 = ${p2} × ${l2} = ${luas2.toFixed(2)} m²</div>
-      <div>Total Luas = ${totalLuas.toFixed(2)} m²</div>
-      ${useSemi ? `<div>Tambahan Semi (50%) = ${semi.toFixed(2)} m²</div>` : ""}
-      ${useBalok ? `<div>Tambahan Balok = ${tambahan.toFixed(2)} m²</div>` : ""}
-      <div><b>Total Luas Akhir = ${totalFinal.toFixed(2)} m²</b></div>
-      <div><b>Total Biaya = ${formatRupiah(biaya)}</b></div>
-    `;
+  <h3>📏 Hasil Perhitungan:</h3>
+  <div>Luas 1 = ${p1} × ${l1} = ${luas1.toFixed(2)} m²</div>
+  <div>Luas 2 = ${p2} × ${l2} = ${luas2.toFixed(2)} m²</div>
+  <div>Total Luas = ${totalLuas.toFixed(2)} m²</div>
+  ${useSemi ? `<div>Tambahan Semi (50%) = ${semi.toFixed(2)} m²</div>` : ""}
+  ${useBalok ? `<div>Tambahan Balok = ${tambahan.toFixed(2)} m²</div>` : ""}
+  <div><b>Total Luas Akhir = ${totalFinal.toFixed(2)} m²</b></div>
+  ${useDiskon && potongan > 0 ? `
+    <div><b>Total Biaya:</b><br>
+      <span style="text-decoration:line-through; color:#888;">${formatRupiah(totalFinal * 150000)}</span><br>
+      <span style="font-size: 18px; font-weight: bold; color: #d32f2f;">${formatRupiah(biaya)}</span>
+    </div>` :
+    `<div><b>Total Biaya = ${formatRupiah(biaya)}</b></div>`
+  }
+`;
 
+    // VISUALISASI
     const scale = 20;
     const w1 = p1 * scale, h1 = l1 * scale;
     const w2 = p2 * scale, h2 = l2 * scale;
@@ -294,48 +329,57 @@
     })() : "";
 
     document.getElementById("boxL").style.display = "block";
-    document.getElementById("boxL").innerHTML = `
-      <div class="visual-container">
-        <div class="visual-wrapper" style="width:${containerWidth}px; height:${containerHeight}px;">
-          <div class="visual-box" style="${box1Style}"></div>
-          <div class="visual-box" style="${box2Style}"></div>
-          ${semiBox}
-<span class="dimension-label" style="
-  top: 5px;
-  left: 10px;
-">
-  ${p1}m
-</span>
+    document.getElementById("boxL").innerHTML = `<div class="visual-container">
+  <<div class="visual-wrapper" style="width: 100%; height: 100%;">
+  <div style="position: relative; width: ${containerWidth}px; height: ${containerHeight}px;">
+    <div class="visual-box" style="${box1Style}"></div>
+    <div class="visual-box" style="${box2Style}"></div>
+    ${semiBox}
+    
+    <!-- P1: Atas tengah kotak 1 -->
+    <span class="dimension-label" style="
+      top: -22px;
+      left: ${w1 / 2}px;
+      transform: translateX(-50%);
+    ">
+      ${p1}m
+    </span>
 
-<span class="dimension-label" style="
-  top: ${h1 / 2}px;
-  left: 2px;
-  transform: rotate(90deg) translateY(-50%);
-  transform-origin: left center;
-">
-  ${l1}m
-</span>
+    <!-- L1: Tengah kiri kotak 1 -->
+    <span class="dimension-label" style="
+      top: ${h1 / 2}px;
+      left: -30px;
+      transform: rotate(90deg) translateY(-50%);
+      transform-origin: left center;
+    ">
+      ${l1}m
+    </span>
 
-<span class="dimension-label" style="
-  top: ${h1 - h2 + 5}px;
-  left: ${w1 + w2 / 2}px;
-  transform: translateX(-50%);
-">
-  ${p2}m
-</span>
+    <!-- P2: Atas tengah kotak 2 -->
+    <span class="dimension-label" style="
+      top: ${h1 - h2 - 22}px;
+      left: ${w1 + w2 / 2}px;
+      transform: translateX(-50%);
+    ">
+      ${p2}m
+    </span>
 
-<span class="dimension-label" style="
-  top: 100px;
-  left: ${w1 + w2 - 36}px;
-  transform: rotate(90deg) translateY(-50%);
-  transform-origin: right center;
-">
-  ${l2}m
-</span>
-        </div>
-      </div>
+    <!-- L2: Tengah kanan kotak 2 (di dalam batas box) -->
+    <span class="dimension-label" style="
+      top: ${h1 - h2 + h2 / 2}px;
+      left: ${w1 + w2 - 10}px;
+      transform: rotate(90deg) translateY(-50%);
+      transform-origin: right center;
+    ">
+      ${l2}m
+    </span>
+  </div>
+</div>
     `;
-    document.getElementById("downloadBtn").style.display = "block";
+
+    // Tampilkan tombol download
+    const downloadBtn = document.getElementById("downloadBtn");
+    if (downloadBtn) downloadBtn.style.display = "block";
   }
 
   function downloadImage() {
