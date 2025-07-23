@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geekz • Pembayaran</title>
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/79773348?v=4" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://cizucu-production.imgix.net/images/photos/nQFsp07vcHjgtwyNG4Ff.jpg?auto=format%2Ccompress&fit=max&w=1080&q=75') no-repeat center center fixed;
+      background-size: cover;
+      color: #f0f0f0;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }.theme-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.theme-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  display: inline-block;
+  backdrop-filter: blur(4px);
+}
+
+.theme-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.rounded-box {
+  border-radius: 12px;
+}
+
+.line-typing {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInLine 0.6s ease forwards;
+}
+
+@keyframes fadeInLine {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#typing-text::after {
+  content: '|';
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+#toast {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  padding: 0.75rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.9rem;
+  z-index: 50;
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+  </style>
+</head>
+<body>
+  <section id="intro" class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+    <div class="theme-box max-w-md w-full">
+      <img src="https://avatars.githubusercontent.com/u/79773348?v=4" class="w-24 h-24 mx-auto rounded-full border-4 border-gray-700 mb-4" alt="Profile" />
+      <h1 class="text-3xl font-bold mb-2">Geekz</h1>
+      <div class="text-sm text-gray-300 space-y-1 mb-4">
+        <p class="line-typing" style="animation-delay: 0.1s;">👨‍💻 Web Developer</p>
+        <p class="line-typing" style="animation-delay: 0.4s;">💸 Topup Game & Aplikasi Premium</p>
+        <p class="line-typing" style="animation-delay: 0.7s;">🖥️ Sewa Panel & Jasa Bot WhatsApp</p>
+      </div>
+      <div class="btn-group">
+        <a href="https://github.com/amgeekz" target="_blank" class="theme-btn">GitHub</a>
+        <a href="https://instagram.com/inodsanjaya" target="_blank" class="theme-btn">Instagram</a>
+        <a href="https://wa.me/6285649455626" target="_blank" class="theme-btn">WhatsApp</a>
+        <a href="https://amgeekz.com" target="_blank" class="theme-btn">Topup</a>
+        <a href="https://amgeekz.my.id" target="_blank" class="theme-btn">Panel</a>
+      </div>
+      <button onclick="showPaymentSection()" class="theme-btn">💳 Lihat Metode Pembayaran</button>
+    </div>
+  </section>  <section id="payment" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
+    <div class="theme-box max-w-md w-full relative">
+      <button onclick="backToIntro()" class="absolute top-4 right-4 text-gray-300 hover:text-white text-lg font-bold">✖</button>
+      <img src="https://avatars.githubusercontent.com/u/79773348?v=4" class="w-20 h-20 mx-auto rounded-full border-4 border-gray-700 mb-4" alt="Profile" />
+      <h2 class="text-xl font-semibold mb-4">Metode Pembayaran</h2>
+      <div id="paymentButtons" class="w-full max-w-md flex flex-col gap-3"></div>
+      <div class="text-sm text-gray-300 pt-4">
+        💡 <span id="typing-text" class="font-medium"></span>
+      </div>
+    </div>
+  </section>  <div id="qrisModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="theme-box max-w-sm w-full text-center relative">
+      <button onclick="document.getElementById('qrisModal').classList.add('hidden')" class="absolute top-2 right-3 text-gray-400 hover:text-white">✖</button>
+      <h2 class="text-xl font-semibold mb-4">Scan QRIS</h2>
+      <img id="qrisImage" src="" alt="QRIS" class="w-full rounded-box mb-4">
+      <button onclick="downloadQRIS()" class="theme-btn">⬇️ Download QRIS</button>
+    </div>
+  </div>
+  <div id="toast"></div>
+  <audio id="bg-music" loop>
+    <source src="caffelatte.mp3" type="audio/mp3">
+  </audio>  <script>
+    const CONFIG = {
+      PAYMENT: {
+        BCA: "6630551445",
+        SeaBank: "901726382280",
+        Ewallet: "085649455626",
+        QRIS: "https://files.catbox.moe/se5i9f.jpg"
+      }
+    };
+
+    const data = CONFIG.PAYMENT;
+
+    window.addEventListener('click', function () {
+      const audio = document.getElementById('bg-music');
+      const context = new (window.AudioContext || window.webkitAudioContext)();
+      const source = context.createMediaElementSource(audio);
+      source.connect(context.destination);
+      audio.play();
+    }, { once: true });
+
+    function renderButtons() {
+      const container = document.getElementById('paymentButtons');
+      container.innerHTML = '';
+      const buttons = [
+        { label: "BCA", text: data.BCA, icon: "🏦" },
+        { label: "SeaBank", text: data.SeaBank, icon: "🏦" },
+        { label: "GoPay", text: data.Ewallet, icon: "📱" },
+        { label: "ShopeePay", text: data.Ewallet, icon: "🛒" },
+        { label: "Dana", text: data.Ewallet, icon: "💰" },
+        { label: "QRIS", text: "All Payment", icon: "🔳", isQRIS: true },
+      ];
+      buttons.forEach(({ label, text, icon, isQRIS }) => {
+        const btn = document.createElement("button");
+        btn.className = "theme-btn w-full px-4 py-2 flex items-center justify-between text-sm";
+
+btn.innerHTML = `
+  <div class="flex items-center justify-between w-full">
+    <div class="flex items-center gap-2">
+      <div class="text-xl">${icon}</div>
+      <span class="font-medium text-sm">${label}</span>
+    </div>
+    <span class="text-sm font-mono text-right text-gray-100">${text}</span>
+  </div>
+`;
+        btn.onclick = () => {
+          isQRIS ? showQRIS() : copyText(text, label);
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function showPaymentSection() {
+      document.getElementById("intro").classList.add("hidden");
+      document.getElementById("payment").classList.remove("hidden");
+      renderButtons();
+    }
+    
+    function backToIntro() {
+  document.getElementById("payment").classList.add("hidden");
+  document.getElementById("intro").classList.remove("hidden");
+}
+
+    function showQRIS() {
+      document.getElementById("qrisImage").src = data.QRIS;
+      document.getElementById("qrisModal").classList.remove("hidden");
+    }
+
+    function downloadQRIS() {
+      fetch(data.QRIS).then(res => res.blob()).then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "qris.jpg";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+    }
+
+    function showToast(msg) {
+  const toast = document.getElementById("toast");
+  toast.innerHTML = `✅ ${msg}`;
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
+function copyText(text, label) {
+  if (navigator.clipboard && window.isSecureContext) {
+    // Clipboard API tersedia dan aman
+    navigator.clipboard.writeText(text)
+      .then(() => showToast(`${label} berhasil disalin!`))
+      .catch(() => fallbackCopy(text, label));
+  } else {
+    fallbackCopy(text, label);
+  }
+}
+
+function fallbackCopy(text, label) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed"; // agar tidak memicu scroll
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  try {
+    document.execCommand("copy");
+    showToast(`${label} berhasil disalin!`);
+  } catch (err) {
+    alert("❌ Gagal menyalin teks. Silakan salin manual.");
+  }
+  document.body.removeChild(textarea);
+}
+
+    const typedTexts = [
+      "Pilih metode pembayaran yang paling mudah buat kamu",
+      "Tekan tombol buat salin nomor otomatis",
+      "QRIS juga bisa, tinggal scan aja!",
+    ];
+
+    let textIndex = 0;
+    let charIndex = 0;
+
+    function typeInstruction() {
+      const display = document.getElementById("typing-text");
+      const currentText = typedTexts[textIndex];
+
+      if (charIndex < currentText.length) {
+        display.innerHTML += currentText.charAt(charIndex++);
+        setTimeout(typeInstruction, 50);
+      } else {
+        setTimeout(() => {
+          display.innerHTML = "";
+          charIndex = 0;
+          textIndex = (textIndex + 1) % typedTexts.length;
+          typeInstruction();
+        }, 2000);
+      }
+    }
+
+    window.addEventListener("load", typeInstruction);
+  </script></body>
+</html>
