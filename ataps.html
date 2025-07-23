@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator Atap L</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      padding: 30px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #155fa0;
+    }
+
+    label {
+      font-size: 14px;
+    }
+
+    input[type="number"] {
+      padding: 5px 8px;
+      margin: 5px 0;
+      font-size: 14px;
+      width: 100px;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #135ba1;
+    }
+
+    .box-result {
+      margin-top: 20px;
+      padding: 15px 20px;
+      border-radius: 6px;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: fit-content;
+    }
+
+    .visual-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: #e0e0e0;
+  box-shadow: inset 0 0 5px #aaa;
+  overflow: visible;
+}
+
+    .visual-box {
+      position: absolute;
+      background-color: #64b5f6;
+      border: 1px solid #444;
+      transition: all 0.3s ease;
+    }
+
+    .semi-box {
+      position: absolute;
+      background-color: #81c784;
+      transition: all 0.3s ease;
+    }
+
+    .dimension-label {
+      position: absolute;
+      font-size: 11px;
+      background: white;
+      padding: 3px 5px;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      font-weight: bold;
+      z-index: 20;
+    }
+
+    .visual-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  border: 2px dashed #888;
+  background-color: #f8f9fa;
+}
+
+    #hasilL {
+      background: #fff;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 5px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+
+    #hasilL div {
+      margin: 4px 0;
+    }
+
+    .input-box {
+      width: 100%;
+      padding: 8px 10px;
+      margin-top: 5px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border 0.3s;
+      box-sizing: border-box;
+    }
+
+    .input-box:focus {
+      border-color: #1976d2;
+      outline: none;
+      box-shadow: 0 0 3px rgba(25, 118, 210, 0.4);
+    }
+    
+    #captureArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+    #btnClose {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  text-decoration: none;
+  color: #1976d2;
+  font-size: 22px;
+  font-weight: bold;
+  background: white;
+  border: 2px solid #1976d2;
+  padding: 4px 10px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+    #btnClose:hover {
+  background-color: #1976d2;
+  color: white;
+}
+    
+@media (max-width: 600px) {
+  body {
+    padding: 15px;
+  }
+
+  .visual-container {
+    overflow-x: auto;
+  }
+
+  .visual-wrapper {
+    min-width: 300px;
+    max-width: 100%;
+  }
+
+  .visual-box,
+  .semi-box {
+    transition: none; /* agar tidak glitch saat responsif */
+  }
+
+  .dimension-label {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+
+  .input-box {
+    font-size: 15px;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .box-result {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #hasilL {
+    max-width: 100%;
+    font-size: 14px;
+  }
+}
+    
+  </style>
+</head>
+<body>
+
+<h2>🟦 Kalkulator Atap Tipe Standar</h2>
+
+<div style="max-width: 420px; margin: 0 auto; background: #fff; padding: 20px 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+<a href="index.html" id="btnClose" title="Kembali ke Beranda">✖</a>
+<div style="display: flex; flex-wrap: wrap; gap: 12px;">
+  <div style="flex: 1 1 45%;">
+    <label for="p1">Panjang (meter):</label>
+    <input type="number" id="p1" step="0.01" placeholder="Contoh: 6.00" class="input-box" inputmode="decimal">
+  </div>
+  <div style="flex: 1 1 45%;">
+    <label for="l1">Lebar (meter):</label>
+    <input type="number" id="l1" step="0.01" placeholder="Contoh: 3.00" class="input-box" inputmode="decimal">
+  </div>
+</div>
+
+  <label style="display:block; margin-top: 8px;">
+    <input type="checkbox" id="useBalok"> Tambahan balok?
+  </label>
+  <input type="number" id="balok" step="0.01" placeholder="Luas balok (m²)" style="display:none;" class="input-box">
+
+  <label style="display:block; margin-top: 8px;">
+    <input type="checkbox" id="useSemi"> Tambahan semi (50%)
+  </label>
+  <label style="display:block; margin-top: 8px;">
+  <input type="checkbox" id="useDiskon"> Gunakan Diskon
+</label>
+<input type="number" id="diskon" min="0" step="1000" placeholder="Contoh: 100000" style="display:none;" class="input-box">
+
+  <button onclick="hitungL()">Hitung</button>
+</div>
+
+<div id="captureArea">
+  <div id="hasilL"></div>
+  <div id="boxL" class="box-result" style="display:none;"></div>
+</div>
+
+<div id="downloadBtn" style="margin-top: 15px; text-align: center; display: none;">
+  <button onclick="downloadImage()">📷 Download Gambar</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+  // Tampilkan input balok dan diskon jika dicentang
+  document.getElementById("useBalok").addEventListener("change", () => {
+    document.getElementById("balok").style.display = document.getElementById("useBalok").checked ? "inline-block" : "none";
+  });
+  document.getElementById("useDiskon").addEventListener("change", () => {
+    document.getElementById("diskon").style.display = document.getElementById("useDiskon").checked ? "inline-block" : "none";
+  });
+
+  function formatRupiah(angka) {
+    return angka.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+  }
+
+  function hitungL() {
+    const p1 = parseFloat(document.getElementById("p1").value);
+    const l1 = parseFloat(document.getElementById("l1").value);
+    const useBalok = document.getElementById("useBalok").checked;
+    const tambahan = useBalok ? parseFloat(document.getElementById("balok").value) || 0 : 0;
+    const useSemi = document.getElementById("useSemi").checked;
+    const useDiskon = document.getElementById("useDiskon").checked;
+    const nominalDiskon = useDiskon ? parseFloat(document.getElementById("diskon").value) || 0 : 0;
+
+    if (isNaN(p1) || isNaN(l1)) {
+      document.getElementById("hasilL").innerText = "Mohon isi panjang dan lebar bidang.";
+      return;
+    }
+
+    const luas = p1 * l1;
+    const semi = useSemi ? luas * 0.5 : 0;
+    const totalFinal = luas + semi + tambahan;
+
+    let biaya = totalFinal * 150000;
+    let potongan = 0;
+    if (useDiskon && nominalDiskon > 0 && nominalDiskon <= biaya) {
+      potongan = nominalDiskon;
+      biaya -= potongan;
+    }
+
+    document.getElementById("hasilL").innerHTML = `
+      <h3>📏 Hasil Perhitungan:</h3>
+      <div>Luas = ${p1} × ${l1} = ${luas.toFixed(2)} m²</div>
+      ${useSemi ? `<div>Tambahan Semi (50%) = ${semi.toFixed(2)} m²</div>` : ""}
+      ${useBalok ? `<div>Tambahan Balok = ${tambahan.toFixed(2)} m²</div>` : ""}
+      <div><b>Total Luas Akhir = ${totalFinal.toFixed(2)} m²</b></div>
+      ${useDiskon && potongan > 0 ? `
+        <div><b>Total Biaya:</b><br>
+          <span style="text-decoration:line-through; color:#888;">${formatRupiah(totalFinal * 150000)}</span><br>
+          <span style="font-size: 18px; font-weight: bold; color: #d32f2f;">${formatRupiah(biaya)}</span>
+        </div>` :
+        `<div><b>Total Biaya = ${formatRupiah(biaya)}</b></div>`
+      }
+    `;
+
+    // VISUALISASI
+    const scale = 20;
+    const w = p1 * scale;
+    const h = l1 * scale;
+
+    const semiBox = useSemi ? `<div class="semi-box" style="
+      top: ${(h * 0.2)}px;
+      left: ${(w * 0.2)}px;
+      width: ${w * 0.6}px;
+      height: ${h * 0.6}px;"></div>` : "";
+
+    document.getElementById("boxL").style.display = "block";
+    document.getElementById("boxL").innerHTML = `
+      <div class="visual-container">
+        <div class="visual-wrapper" style="width: 100%; height: 100%;">
+          <div style="position: relative; width: ${w}px; height: ${h}px;">
+            <div class="visual-box" style="top:0; left:0; width:${w}px; height:${h}px;"></div>
+            ${semiBox}
+
+            <!-- Label Panjang -->
+            <span class="dimension-label" style="
+              top: -22px;
+              left: ${w / 2}px;
+              transform: translateX(-50%);
+            ">
+              ${p1}m
+            </span>
+
+            <!-- Label Lebar -->
+            <span class="dimension-label" style="
+              top: ${h / 2}px;
+              left: -30px;
+              transform: rotate(90deg) translateY(-50%);
+              transform-origin: left center;
+            ">
+              ${l1}m
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("downloadBtn").style.display = "block";
+  }
+
+  function downloadImage() {
+    const target = document.getElementById('captureArea');
+    html2canvas(target).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'atap-standar.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  }
+</script>
+</body>
+</html>
